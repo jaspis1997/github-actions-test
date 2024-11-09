@@ -1,0 +1,30 @@
+name: PR Validation
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize]
+
+jobs:
+  validate-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate PR source and target branches
+        run: |
+          BASE_BRANCH="${{ github.event.pull_request.base.ref }}"
+          HEAD_BRANCH="${{ github.event.pull_request.head.ref }}"
+          PR_TITLE="${{ github.event.pull_request.title }}"
+
+          if [[ "$BASE_BRANCH" == release/* ]] && [[ "$HEAD_BRANCH" != feature/* ]]; then
+            echo "Error: PR to 'release/*' must originate from 'feature/*' branches."
+            exit 1
+          elif [[ "$BASE_BRANCH" == main ]] && [[ "$HEAD_BRANCH" != release/* ]]; then
+            echo "Error: PR to 'main' must originate from 'release/*' branches."
+            exit 1
+          fi
+
+          if [[ "$BASE_BRANCH" == main ]]; then
+            if [[ ! "$PR_TITLE" =~ ^release:\ .* ]]; then
+              echo "Error: PR title for merging 'release/*' to 'main' must match 'release: <version>'."
+              exit 1
+            fi
+          fi
