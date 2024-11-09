@@ -3,7 +3,7 @@ name: Go Test Validation
 on:
   pull_request:
     branches:
-      - release/*
+      - main
 
 jobs:
   run-tests:
