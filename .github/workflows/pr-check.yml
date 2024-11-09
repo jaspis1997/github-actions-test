@@ -23,7 +23,7 @@ jobs:
           fi
 
           if [[ "$BASE_BRANCH" == main ]]; then
-            if [[ ! "$PR_TITLE" =~ ^release:\ .* ]]; then
+            if [[ ! "$PR_TITLE" =~ ^release:\ v[0-9]+\.[0-9]+\.[0-9]+(-[a-zA-Z0-9]+)?$ ]]; then
               echo "Error: PR title for merging 'release/*' to 'main' must match 'release: <version>'."
               exit 1
             fi
